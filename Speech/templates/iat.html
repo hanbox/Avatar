@@ -10,6 +10,7 @@
     <meta name="keywords" content="" />
     <meta name="description" content="" />
     <link href="{% static "speech/css/style.css" %}" rel="stylesheet" type="text/css" />
+    <link href="{% static "mui/css/mui.min.css" %}" rel="stylesheet" type="text/css" />
 
     <style type="text/css">
         #tag-cloud{
@@ -21,13 +22,10 @@
 </head>
 
 <body>
+    <textarea id="text_analyze" rows="5" placeholder="语句输入"></textarea>
+    <button type="btn_comm_analyze" class="mui-btn mui-btn-primary" onclick="analyze_common()">语句分析</button>
     <div class="clear"></div>
     <h2 id='iat_result'>语音听写</h2>
-    <ul class="helper">
-        <li>请确认麦克风可以正常使用</li>
-        <li>请保持网络接入畅通、稳定</li>
-        <li>在安静环境下使用效果更佳</li>
-    </ul>
 
 	<div style="position:relative">
 		<div id='a'>点击开始录音</div>
@@ -48,6 +46,10 @@
                     console.log(ret);
                     show_tagcloud(ret);
             })
+        }
+        function analyze_common(){
+            var data = $("#text_analyze").val();;
+            speechToAnalyze(data);
         }
         function show_tagcloud(data){
             var entries = [];
@@ -74,12 +76,13 @@
                 fontFamily: 'Oswald, Arial, sans-serif',
                 fontSize: '15',
                 fontColor: '#fff',
-                fontWeight: 'normal',//bold
+                fontWeight: 'nzormal',//bold
                 fontStyle: 'normal',//italic 
                 fontStretch: 'normal',//wider, narrower, ultra-condensed, extra-condensed, condensed, semi-condensed, semi-expanded, expanded, extra-expanded, ultra-expanded
                 fontToUpperCase: true
             };
             //var svg3DTagCloud = new SVG3DTagCloud( document.getElementById( 'holder'  ), settings );
+            
             $('#tag-cloud').svg3DTagCloud(settings);
         }
         $(function(){

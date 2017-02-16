@@ -19,6 +19,7 @@ from django.contrib import admin
 import Speech.urls
 
 urlpatterns = [
+    url(r'^grappelli/', include('grappelli.urls')), # grappelli URLS
     url(r'^admin/', admin.site.urls),
 
     url(r'^speech/', include(Speech.urls)),
