@@ -1,0 +1,94 @@
+﻿{%load staticfiles%}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf8" />
+    <title>语句分析</title>
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <link href="{% static "speech/css/style.css" %}" rel="stylesheet" type="text/css" />
+
+    <style type="text/css">
+        #tag-cloud{
+            width:640px;
+            height:480px;
+            margin: 50px auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="clear"></div>
+    <h2 id='iat_result'>语音听写</h2>
+    <ul class="helper">
+        <li>请确认麦克风可以正常使用</li>
+        <li>请保持网络接入畅通、稳定</li>
+        <li>在安静环境下使用效果更佳</li>
+    </ul>
+
+	<div style="position:relative">
+		<div id='a'>点击开始录音</div>
+        <div id="canvas_wrapper" style="display:none">
+            <div style="display: inline">&spades;</div>
+            <canvas id="volume" height="4"></canvas>
+        </div>
+	</div>
+
+    <div id='tag-cloud'></div>
+    <script type="text/javascript" src="{% static "bower_components/jquery/dist/jquery.min.js" %}"></script>
+    <script>
+        onerror=function(a,b,c){
+            alert(a+b+c);
+        }
+        function speechToAnalyze(data){
+            $.getJSON("{% url 'ajax-analyze' %}",{'speech_data':data}, function(ret){
+                    console.log(ret);
+                    show_tagcloud(ret);
+            })
+        }
+        function show_tagcloud(data){
+            var entries = [];
+            var info_map = data.count_dict;
+            console.log(info_map);
+            for ( analyze_info in info_map ){
+                console.log(analyze_info);
+                entries.push({ label: analyze_info, url: '#', target: '_top' });
+            }
+
+            var settings = {
+                entries: entries,
+                width: 640,
+                height: 480,
+                radius: '65%',
+                radiusMin: 75,
+                bgDraw: true,
+                bgColor: '#494A5F',
+                opacityOver: 1.00,
+                opacityOut: 0.05,
+                opacitySpeed: 6,
+                fov: 800,
+                speed: 0.5,
+                fontFamily: 'Oswald, Arial, sans-serif',
+                fontSize: '15',
+                fontColor: '#fff',
+                fontWeight: 'normal',//bold
+                fontStyle: 'normal',//italic 
+                fontStretch: 'normal',//wider, narrower, ultra-condensed, extra-condensed, condensed, semi-condensed, semi-expanded, expanded, extra-expanded, ultra-expanded
+                fontToUpperCase: true
+            };
+            //var svg3DTagCloud = new SVG3DTagCloud( document.getElementById( 'holder'  ), settings );
+            $('#tag-cloud').svg3DTagCloud(settings);
+        }
+        $(function(){
+            
+        });
+    </script>
+	<script type="text/javascript" src="{% static "speech/js/fingerprint2.min.js" %}"></script>
+	<script type="text/javascript" src="{% static "speech/js/iat.all.js" %}"></script>
+    <script type="text/javascript" src="{% static "speech/js/demo.js" %}"></script>
+    <script type="text/javascript" src="{% static "tag_cloud/js/jquery.svg3dtagcloud.min.js" %}"></script>
+</body>
+</html>
