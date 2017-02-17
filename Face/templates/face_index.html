@@ -1,0 +1,171 @@
+{%load staticfiles%}
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+        <title>webcam demo</title>
+		<meta name="author" content="">
+		<meta name="description" content="">
+		<meta name="keywords" content="">
+		<link href='http://fonts.googleapis.com/css?family=Revalia' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" href="{% static 'face/css/jquery.qtip.min.css' %}" type="text/css" media="screen">
+		<style>
+			body{
+				font-size:12px;
+				background: #333;
+				font-family: 'Revalia', cursive, arial;
+			}
+			
+			div#pictures,div#webcam{
+				margin: 10px 0 0;
+			}
+			
+			h1{
+				margin: 20px 0;
+			}
+			
+			div#from{
+				margin:20px 0px;
+			}
+			
+			div#from a{
+				color: #FFF;
+				font-size:12px;
+				background: #1557C3;
+				margin: 20px 0;
+				border-radius: 5px;
+				padding:10px;
+				line-height: 25px;
+			}
+			
+			h1 a{
+				background: #333;
+				border-radius: 5px;
+				padding: 5px;
+				float:right;
+				cusor: hand;
+				color: #FFF;
+				text-decoration: none;
+				margin-left: 20px;
+			}
+			
+			#main{
+				width: 800px;
+				margin: 10px auto;
+				background: #FFF;
+				color: #333;
+				border: 2px solid #FFF;
+				box-shadow: 0px 0px 10px #CCC;
+				padding:20px;
+				border-radius: 5px;
+			}
+			
+			#main article{
+				margin-bottom: 50px;
+				background: #F8F8F8;
+				border-radius: 5px;
+				padding:20px;
+				border: 1px solid #bbb;
+			}
+			
+			#main #webcam{
+				height: 400px;
+				width: 100%;
+			}
+			
+			#main #plist{
+				margin: 20px 0;
+				font-weight: bold;
+				border-radius: 5px;
+				background: #CCC;
+				padding:10px;
+			}
+			
+			#main img{
+				margin-bottom: 50px;
+				background: #F8F8F8;
+				border-radius: 10px;
+				box-shadow: 0px 0px 5px #888;
+			}			
+			
+			.clear{
+				clear:both;
+			}
+			
+			#main ul{
+				list-style:none;
+				margin:0;
+				padding:0;
+			}
+			
+			#main .photobooth{
+				border: 1px solid #ccc;
+				border-radius: 5px;
+			}
+		
+		</style>
+	</head> 
+	<body>
+		<section id="main">
+			<article>
+			<div id="webcam"></div>
+			<div id="plist">截图列表</div>
+			<div id="pictures"></div>
+			<div class="clear"></div>
+			<button type="button" onclick="interval_Capture(3000)">开始</button>
+			</article>
+		</section>
+		<script type="text/javascript" src="{% static "bower_components/jquery/dist/jquery.min.js" %}"></script>
+		<script type="text/javascript" src="{% static 'face/js/photobooth_min.js' %}"></script>
+		<script type="text/javascript" src="{% static 'face/js/jquery.qtip.min.js' %}"></script>
+		<script type="text/javascript">
+		$(function(){
+			// $('#webcam').data( "photobooth" ).forceHSB = true;
+			$('#webcam').photobooth().on("image",function( event, dataUrl ){	
+				$.ajax({  
+                    type : "POST",  
+                    url : 'ajax_uploadimg/',  
+                    data : {'img':dataUrl.substr(22)},
+                    timeout : 60000,  
+                    success : function(data){  
+                          
+                    }  
+                }); 
+				$( "#pictures" ).append( '<img src="' + dataUrl + '" >');
+			});
+			
+			if(!$('#webcam').data('photobooth').isSupported){
+				alert('HTML5 webcam is not supported by your browser, please use latest firefox, opera or chrome!');
+			}	
+			
+			$('.photobooth ul li:last').qtip({
+				content: {
+					text: '点击拍照',
+					title: {
+						text: 'Tips',
+						button: true
+					}
+				},
+				show: {
+					ready: false
+				},
+				position: {
+					target: 'event',
+			      	my: 'left center', 
+			      	at: 'right center'
+				},
+				style: {
+					classes: 'ui-tooltip-shadow ui-tooltip-bootstrap',
+					width: 300
+				}
+			});
+		});
+			
+		function interval_Capture(time){
+			setInterval(function(){
+				$('#webcam').data('photobooth').capture();
+			}, time);
+		}	
+		</script>
+	</body>	
+</html>

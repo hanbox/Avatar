@@ -43,8 +43,8 @@
         }
         function speechToAnalyze(data){
             $.getJSON("{% url 'ajax-analyze' %}",{'speech_data':data}, function(ret){
-                    console.log(ret);
-                    show_tagcloud(ret);
+                console.log(ret);
+                show_tagcloud(ret);
             })
         }
         function analyze_common(){
@@ -85,9 +85,6 @@
             
             $('#tag-cloud').svg3DTagCloud(settings);
         }
-        $(function(){
-            
-        });
     </script>
 	<script type="text/javascript" src="{% static "speech/js/fingerprint2.min.js" %}"></script>
 	<script type="text/javascript" src="{% static "speech/js/iat.all.js" %}"></script>
