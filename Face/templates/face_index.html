@@ -131,8 +131,26 @@
                     data : {'img':dataUrl.substr(22)},
                     timeout : 60000,  
                     success : function(data){  
-                    	num_analyze++;
-                    	$( "#pictures" ).append( '<img src="' + dataUrl + '" >');
+                    	$( "#pictures" ).append('<canvas id="' +"img_analyze_" + num_analyze + '" width="758" height="400"></canvas>');
+
+                    	var canvas =document.getElementById("img_analyze_" + num_analyze);  
+				        var context2D =canvas.getContext("2d");  
+				          
+				        var pic = new Image();  
+				        pic.src = dataUrl;
+				        context2D.drawImage(pic,0, 0); 
+				        var face_rectangle = data.faces[0].face_rectangle;
+				        context2D.beginPath();
+						context2D.lineWidth="3";
+						context2D.strokeStyle="red";
+				        context2D.rect(
+				        	face_rectangle.left,
+				        	face_rectangle.top,
+				        	face_rectangle.width,
+				        	face_rectangle.height);  
+				        context2D.stroke();
+				         
+                    	// $( "#pictures" ).append('<img src="' + dataUrl + '" >');
             			$( "#pictures" ).append("<ul>"
             				+ "<li>预测年龄:" + data.faces[0].attributes.age.value + "</li>"
             				+ "<li>预测性别:" + data.faces[0].attributes.gender.value + "</li>"
@@ -140,6 +158,8 @@
             				+ "<li>预测心情:" + data.faces[0].attributes.smile.value + "</li>"
             				+ "</ul>"
         				);
+
+        				num_analyze++;
                     }  
                 }); 
 			});
