@@ -186,7 +186,7 @@ Photobooth = function (e) {
                 var n = x.getImageData(e.x, e.y, e.width, e.height);
                 t.getContext("2d").putImageData(n, 0, 0)
             }
-            h.onImage(t.toDataURL())
+            h.onImage(t.toDataURL("image/jpeg", 0.5))
         };
         g("trigger").onclick = function () {
             L.className = "blind", L.style.opacity = 1, setTimeout(function () {
@@ -211,7 +211,7 @@ Photobooth = function (e) {
                 var n = x.getImageData(e.x, e.y, e.width, e.height);
                 t.getContext("2d").putImageData(n, 0, 0)
             }
-            h.onImage(t.toDataURL())
+            h.onImage(t.toDataURL("image/jpeg", 0.5))
         };
         var A = function (e) {
                 c = e;

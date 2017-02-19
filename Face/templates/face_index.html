@@ -107,31 +107,41 @@
 	</head> 
 	<body>
 		<section id="main">
-			<article>
-			<div id="webcam"></div>
-			<div id="plist">截图列表</div>
-			<div id="pictures"></div>
-			<div class="clear"></div>
-			<button type="button" onclick="interval_Capture(3000)">开始</button>
+			<article id="app_cam">
+				<div id="webcam"></div>
+				<div id="plist">截图列表</div>
+				<div id="pictures"></div>
+				<div class="clear"></div>
+				<button v-on:click="interval_Capture(3000)">开始</button>
 			</article>
 		</section>
-		<script type="text/javascript" src="{% static "bower_components/jquery/dist/jquery.min.js" %}"></script>
+		<script type="text/javascript" src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
+		<script type="text/javascript" src="{% static 'bower_components/vue/dist/vue.min.js' %}"></script>
 		<script type="text/javascript" src="{% static 'face/js/photobooth_min.js' %}"></script>
 		<script type="text/javascript" src="{% static 'face/js/jquery.qtip.min.js' %}"></script>
 		<script type="text/javascript">
+		var num_analyze = 1;
 		$(function(){
 			// $('#webcam').data( "photobooth" ).forceHSB = true;
 			$('#webcam').photobooth().on("image",function( event, dataUrl ){	
+				$( "#pictures" ).append( '<h4>' + "第" + num_analyze + "次识别,正在识别中请等待。。。" + '</h4>');
 				$.ajax({  
                     type : "POST",  
                     url : 'ajax_uploadimg/',  
                     data : {'img':dataUrl.substr(22)},
                     timeout : 60000,  
                     success : function(data){  
-                          
+                    	num_analyze++;
+                    	$( "#pictures" ).append( '<img src="' + dataUrl + '" >');
+            			$( "#pictures" ).append("<ul>"
+            				+ "<li>预测年龄:" + data.faces[0].attributes.age.value + "</li>"
+            				+ "<li>预测性别:" + data.faces[0].attributes.gender.value + "</li>"
+            				+ "<li>是否佩戴眼镜:" + data.faces[0].attributes.glass.value + "</li>"
+            				+ "<li>预测心情:" + data.faces[0].attributes.smile.value + "</li>"
+            				+ "</ul>"
+        				);
                     }  
                 }); 
-				$( "#pictures" ).append( '<img src="' + dataUrl + '" >');
 			});
 			
 			if(!$('#webcam').data('photobooth').isSupported){
@@ -160,12 +170,20 @@
 				}
 			});
 		});
-			
-		function interval_Capture(time){
-			setInterval(function(){
-				$('#webcam').data('photobooth').capture();
-			}, time);
-		}	
+
+		var app_cam = new Vue({
+		  el: '#app_cam',
+		  data: {
+		    
+		  },
+		  methods: {
+		    interval_Capture: function (time) {
+      			setInterval(function(){
+					$('#webcam').data('photobooth').capture();
+				}, time);
+		    }
+		  }
+		})
 		</script>
 	</body>	
 </html>
