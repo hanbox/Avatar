@@ -8,6 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 import base64 
 from tools_face_analyze import analyze_user
 import time
+from models import Face_main
 
 # Create your views here.
 def index(request):
@@ -29,6 +30,9 @@ def ajax_uploadimg(request):
         f.close()
 
         ret = analyze_user(path_file, id_img)
+
+        # if ret:
+        #     face = Face_main.objects.create(image=imgdata, predicted_age=ret.faces[0].attributes.age.value)
     else:
         print 'error'
 
