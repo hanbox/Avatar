@@ -21,8 +21,8 @@ import Speech.urls
 import Face.urls
 import Jokes.urls
 
-router = routers.DefaultRouter()
-Jokes.urls.regRouter(router)
+router_v1 = routers.DefaultRouter()
+Jokes.urls.regRouter(router_v1)
 
 urlpatterns = [
     url(r'^grappelli/', include('grappelli.urls')), # grappelli URLS
@@ -32,6 +32,7 @@ urlpatterns = [
     url(r'^face/', include(Face.urls)),
 
     #Restful Api
-    url(r'^', include(router.urls)),
+    url(r'^api/v1/', include(router_v1.urls)),
+    url(r'^api/v2/', include(Jokes.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]
